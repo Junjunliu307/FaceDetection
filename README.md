@@ -1,48 +1,67 @@
 
-# FaceDetection
+# Face and Mouth Detection using YOLOv8 and Mediapipe
 
-本项目包含两个主要功能：
-1. 将视频中的人脸检测结果保存为文本文件。
-2. 处理视频并将人脸检测框绘制到输出视频中。
+## 简介
+此项目结合了 **YOLOv8** 和 **Mediapipe** 实现了实时人脸检测与嘴唇开合判断的功能。检测结果会存储在指定的文本文件中，同时在视频中绘制相应的标注框（红色表示张嘴，绿色表示闭嘴）。
 
-## 环境要求
+---
 
-请确保已安装以下库：
+## 功能
+1. 使用 **YOLOv8** 检测视频中的人脸。
+2. 使用 **Mediapipe** 提取嘴唇关键点，判断嘴唇是否张开。
+3. 将人脸坐标和嘴唇开合状态分别保存到两个文本文件中。
+4. 在视频中显示人脸框和嘴唇状态。
+
+---
+
+## 安装依赖
+运行代码之前，请确保安装以下依赖库：
+
 ```bash
-pip install opencv-python torch torchvision ultralytics
+pip install opencv-python torch torchvision ultralytics mediapipe
 ```
+
+---
 
 ## 文件说明
+- `VideoProduct.py`：项目主文件，包含人脸检测和嘴唇开合判断的逻辑。
+- `yolov8n-face.pt`：YOLOv8 模型权重文件，用于人脸检测。
 
-- **`TextProduct.py`**  
-  - 功能：从输入视频中检测人脸，并将每帧的检测框坐标和置信度保存到文本文件 `detections.txt`。
-  - 使用方法：修改代码中的 `video_path` 指定输入视频路径，然后运行脚本。
-  
-- **`VideoProduct.py`**  
-  - 功能：从输入视频中检测人脸，并在输出视频中绘制检测框和置信度。
-  - 使用方法：修改代码中的 `video_path` 指定输入视频路径，然后运行脚本。
-
-- **`yolov8n-face.pt`**  
-  - YOLOv8 人脸检测模型的预训练权重文件。
+---
 
 ## 使用方法
+1. **准备输入视频**：
+   - 将输入视频命名为 `input_video.mp4` 或修改代码中的 `video_path` 变量。
 
-### 1. 安装依赖
-在项目根目录运行以下命令：
-```bash
-pip install opencv-python torch torchvision ultralytics
-```
+2. **运行代码**：
+   - 使用以下命令运行项目：
+     ```bash
+     python VideoProduct.py
+     ```
 
-### 2. 检测人脸并保存结果到文本
-运行 `TextProduct.py`：
-```bash
-python TextProduct.py
-```
-结果将保存到 `detections.txt` 文件中。
+3. **生成输出**：
+   - 处理后的视频会保存为 `output_video.mp4`。
+   - 检测到的人脸框坐标会保存到 `faceDetections.txt` 文件中。
+   - 检测到张嘴状态的帧信息会保存到 `speakDetections.txt` 文件中。
 
-### 3. 检测人脸并生成视频
-运行 `VideoProduct.py`：
-```bash
-python VideoProduct.py
-```
-输出的视频文件为 `output_video.mp4`。
+---
+
+## 输出示例
+- **`faceDetections.txt`**：
+  ```
+  Frame 1: [100, 50, 200, 150] Confidence: 0.95
+  Frame 2: [120, 60, 220, 160] Confidence: 0.90
+  ```
+
+- **`speakDetections.txt`**：
+  ```
+  Frame 1: [100, 50, 200, 150]
+  Frame 3: [120, 60, 220, 160]
+  ```
+
+---
+
+## 注意事项
+1. 请确保 `yolov8n-face.pt` 文件与主代码在同一目录下。
+2. 输入视频分辨率较高时，处理速度可能会变慢。
+3. 如果需要调整嘴唇开合的灵敏度，请修改 `is_mouth_open` 函数中的 `threshold` 参数。
